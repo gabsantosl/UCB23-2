@@ -1,11 +1,3 @@
-/*
-typedef struct Aluno {
-    char nome[20];
-    int matricula;
-    float nota;
-} Aluno;
-*/
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
