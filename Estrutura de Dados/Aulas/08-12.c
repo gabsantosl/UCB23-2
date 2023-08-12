@@ -1,21 +1,28 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <locale.h>
+#include <string.h>
+
+typedef struct Aluno{
+    char nome[20];
+    int matricula;
+    float nota;
+} Aluno;
 
 int main(){
-	
-	setlocale(LC_ALL, "Portuguese");
 
-    //int lista[10] = {1,2,3,4,5,6,7,8,9,10};
-    int *lista;
-    int  i;
+    Aluno alunos[3];
+    int i;
 
-    for(i=0;i<10;i++){
-        lista[i] = i + 1;
+    for(i =0;i<3;i++){
+        scanf("%d", &alunos[i].matricula);
+        scanf("%f", &alunos[i].nota);
+        scanf("%s", &alunos[i].nome);
     }
 
-    for(i=0;i<10;i++){
-        printf("%d: %d\n", i, lista[i]);
+    for(i =0;i<3;i++){
+        printf("%d", alunos[i].matricula);
+        printf("%f", alunos[i].nota);
+        printf("%s", alunos[i].nome);
     }
 
 return 0;
