@@ -1,0 +1,167 @@
+class Node:
+    def __init__(self, artist, song):
+        self.artist = artist
+        self.song = song
+        self.next = None
+        self.prev = None
+
+class CircularDoublyLinkedList:
+    def __init__(self):
+        self.head = None
+        self.tail = None
+
+    def insert(self, artist, song):
+        new_node = Node(artist, song)
+        if not self.head:
+            self.head = new_node
+            self.tail = new_node
+            new_node.next = self.head
+            new_node.prev = self.head
+        else:
+            new_node.next = self.head
+            new_node.prev = self.tail
+            self.tail.next = new_node
+            self.head.prev = new_node
+            self.tail = new_node
+
+    def display_by_registration(self):
+        current = self.head
+        if not current:
+            print("Playlist vazia")
+            return
+        while True:
+            print(f'Artista: {current.artist}, Música: {current.song}')
+            current = current.next
+            if current == self.head:
+                break
+
+    def display_by_song(self):
+        current = self.head
+        songs = []
+        if not current:
+            print("Playlist vazia")
+            return
+        while True:
+            songs.append((current.artist, current.song))
+            current = current.next
+            if current == self.head:
+                break
+        songs.sort(key=lambda x: x[1])
+        for artist, song in songs:
+            print(f'Artista: {artist}, Música: {song}')
+
+    def remove(self, artist, song):
+        current = self.head
+        if not current:
+            print("Playlist vazia")
+            return
+        while True:
+            if current.artist == artist and current.song == song:
+                if current == self.head:
+                    self.head = current.next
+                    self.head.prev = self.tail
+                    self.tail.next = self.head
+                elif current == self.tail:
+                    self.tail = current.prev
+                    self.tail.next = self.head
+                    self.head.prev = self.tail
+                else:
+                    current.prev.next = current.next
+                    current.next.prev = current.prev
+                return
+            current = current.next
+            if current == self.head:
+                break
+
+    def search(self, query):
+        current = self.head
+        found = False
+        if not current:
+            print("Playlist vazia")
+            return
+        while True:
+            if query.lower() in current.artist.lower() or query.lower() in current.song.lower():
+                print(f'Artista: {current.artist}, Música: {current.song}')
+                found = True
+            current = current.next
+            if current == self.head:
+                break
+        if not found:
+            print("Nenhuma música encontrada com o termo de busca.")
+
+    def move_forward(self):
+        if not self.head:
+            print("Playlist vazia")
+            return
+        self.head = self.head.next
+        self.tail = self.tail.next
+
+    def move_back(self):
+        if not self.head:
+            print("Playlist vazia")
+            return
+        self.head = self.head.prev
+        self.tail = self.tail.prev
+
+def load_playlist(filename):
+    playlist = CircularDoublyLinkedList()
+    with open(filename, 'r') as file:
+        for line in file:
+            artist, song = line.strip().split(';')
+            playlist.insert(artist, song)
+    return playlist
+
+def save_playlist(filename, playlist):
+    with open(filename, 'w') as file:
+        current = playlist.head
+        while True:
+            file.write(f'{current.artist};{current.song}\n')
+            current = current.next
+            if current == playlist.head:
+                break
+
+def main():
+    filename = 'musicas.txt'
+    playlist = load_playlist(filename)
+
+    while True:
+        print("\nMenu:")
+        print("1. Exibição da playlist pela ordem de cadastro")
+        print("2. Exibição da playlist ordenadas pelo nome das músicas")
+        print("3. Inserção de novas músicas")
+        print("4. Remoção de uma música")
+        print("5. Busca por uma música")
+        print("6. Avançar para próxima música")
+        print("7. Retornar a música anterior")
+        print("8. Sair")
+
+        choice = input("Escolha uma opção: ")
+
+        if choice == '1':
+            playlist.display_by_registration()
+        elif choice == '2':
+            playlist.display_by_song()
+        elif choice == '3':
+            artist = input("Digite o nome do artista: ")
+            song = input("Digite o nome da música: ")
+            playlist.insert(artist, song)
+            save_playlist(filename, playlist)
+        elif choice == '4':
+            artist = input("Digite o nome do artista da música a ser removida: ")
+            song = input("Digite o nome da música a ser removida: ")
+            playlist.remove(artist, song)
+            save_playlist(filename, playlist)
+        elif choice == '5':
+            query = input("Digite o termo de busca: ")
+            playlist.search(query)
+        elif choice == '6':
+            playlist.move_forward()
+        elif choice == '7':
+            playlist.move_back()
+        elif choice == '8':
+            break
+        else:
+            print("Opção inválida. Tente novamente.")
+
+if __name__ == "__main__":
+    main()
